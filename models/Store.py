@@ -13,7 +13,17 @@ class StoreDO(db.Model):
         self.name = name
 
     def json(self):
-        return {'id': self.id, 'name': self.name, 'items': [y.json() for y in self.items.all()]}
+        return {
+                'id': self.id,
+                'name': self.name,
+                'items': [item.json() for item in self.items.all()]
+                }
+
+    def noid_json(self):
+        return {
+                'id': self.id,
+                'name': self.name
+               }
 
     @classmethod
     def find_store_by_name(cls, name):
