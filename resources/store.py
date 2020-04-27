@@ -6,35 +6,31 @@ from models.Store import StoreDO
 
 class Store(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('name',
-                        type=str,
-                        required=True,
-                        help='Every store must have a name'
-                        )
+    parser.add_argument(
+        "name", type=str, required=True, help="Every store must have a name"
+    )
 
     @jwt_required
-    def get(self, name):
+    def get(self, name: str):
         x = StoreDO.find_store_by_name(name)
 
-        return (x.json(), 200) if x else ({'store': None}, 404)
+        return (x.json(), 200) if x else ({"store": None}, 404)
 
     @jwt_required
-    def post(self, name):
+    def post(self, name: str):
         if StoreDO.find_store_by_name(name):
-            return {'message': "A store with name {} already exists".format(name)}, 400
-
-        # request_data = Store.parser.parse_args()
+            return {"message": "A store with name {} already exists".format(name)}, 400
 
         store = StoreDO(name)
         store.upsert_store()
-        return {'message': 'created'}, 201
+        return {"message": "created"}, 201
 
     @jwt_required
-    def delete(self, name):
+    def delete(self, name: str):
         x = StoreDO.find_store_by_name(name)
         if x:
             x.delete()
-        return {'message': 'Store deleted'}
+        return {"message": "Store deleted"}
 
 
 class StoreList(Resource):
@@ -42,7 +38,9 @@ class StoreList(Resource):
     def get(self):
         user_id = get_jwt_identity()
 
-        x = [store.json() for store in
-             StoreDO.find_stores()] if user_id else [store.noid_json() for store in
-                                                                               StoreDO.find_stores()]
-        return {'stores': x}
+        x = (
+            [store.json() for store in StoreDO.find_stores()]
+            if user_id
+            else [store.noid_json() for store in StoreDO.find_stores()]
+        )
+        return {"stores": x}
