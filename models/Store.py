@@ -1,6 +1,6 @@
 from typing import Dict, List, Union
 
-from Item import ItemJSON
+from models.Item import ItemJSON
 from db import db
 
 StoreJSON = Dict[str, Union[int, str, List[ItemJSON]]]

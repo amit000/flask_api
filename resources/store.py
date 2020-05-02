@@ -1,5 +1,4 @@
-from flask_jwt import jwt_required
-from flask_jwt_extended import jwt_optional, get_jwt_identity
+from flask_jwt_extended import jwt_optional, get_jwt_identity, jwt_required
 from flask_restful import Resource, reqparse
 from models.Store import StoreDO
 
