@@ -1,8 +1,9 @@
-from flask import jsonify
-from flask_restful import Resource, reqparse
+from flask import jsonify, request
+from flask_restful import Resource
 
 from blacklist import BLACKLIST
 from models.User import User
+from schemas.UserSchema import UserSchema
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import (
     create_access_token,
@@ -24,23 +25,16 @@ INCORRECT_CREDENTIALS_ERROR = "Invalid username or password"
 ADMIN_PRIVILEGE_ERROR = "You need admin privileges to delete user"
 USER_LOGGED_OUT_MSG = "Successfully Logged Out"
 
-
-_parser = reqparse.RequestParser()
-_parser.add_argument(
-    "username", type=str, required=True, help=FIELD_MISSING_ERROR.format("Username")
-)
-_parser.add_argument(
-    "password", type=str, required=True, help=FIELD_MISSING_ERROR.format("Password")
-)
+user_schema = UserSchema()
 
 
 class RegisterUser(Resource):
     def post(self):
-        data = _parser.parse_args()
-        if User.find_by_username(data["username"]):
-            return {"message": USER_EXISTS_ERROR.format(data["username"])}, 400
+        user = user_schema.load(request.get_json())
 
-        user = User(**data)
+        if User.find_by_username(user.username):
+            return {"message": USER_EXISTS_ERROR.format(user.username)}, 400
+
         user.create_user()
         return {"message": USER_CREATED_MSG}, 201
 
@@ -49,7 +43,9 @@ class UserResource(Resource):
     @classmethod
     def get(cls, user_id: int):
         user = User.find_by_id(user_id)
-        return user.json() if user else ({"message": USER_NOT_FOUND_MSG}, 404)
+        return (
+            user_schema.dump(user) if user else ({"message": USER_NOT_FOUND_MSG}, 404)
+        )
 
     @classmethod
     @jwt_required
@@ -67,9 +63,11 @@ class UserResource(Resource):
 class UserLogin(Resource):
     @classmethod
     def post(cls):
-        data = _parser.parse_args()
-        user = User.find_by_username(data["username"])
-        if user and safe_str_cmp(user.password, data["password"]):
+        user_data = user_schema.load(request.get_json())
+
+        print(user_data)
+        user = User.find_by_username(user_data.username)
+        if user and safe_str_cmp(user.password, user_data.password):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
             return {"access_token": access_token, "refresh_token": refresh_token}, 200

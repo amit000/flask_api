@@ -1,28 +1,15 @@
-from typing import Dict, List, Union
+from typing import Dict, List
 
-from models.Item import ItemJSON
 from db import db
-
-StoreJSON = Dict[str, Union[int, str, List[ItemJSON]]]
 
 
 class StoreDO(db.Model):
     __tablename__ = "stores"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True)
+    name = db.Column(db.String(80), nullable=False, unique=True)
 
     items = db.relationship("ItemDO", lazy="dynamic")
-
-    def __init__(self, name: str):
-        self.name = name
-
-    def json(self) -> StoreJSON:
-        return {
-            "id": self.id,
-            "name": self.name,
-            "items": [item.json() for item in self.items.all()],
-        }
 
     def noid_json(self) -> Dict:
         return {"id": self.id, "name": self.name}

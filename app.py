@@ -10,6 +10,8 @@ from resources.user import (
     TokenRefresh,
     UserLogout,
 )
+from ma import ma
+from marshmallow import ValidationError
 from resources.store import Store, StoreList
 from blacklist import BLACKLIST
 
@@ -61,6 +63,11 @@ def revoked_token_callback():
     return jsonify({"message": "Token has been revoked", "error": "token_revoked"})
 
 
+@app.errorhandler(ValidationError)
+def handle_validation_error(err):
+    return jsonify(err.messages), 400
+
+
 api.add_resource(Item, "/item/<string:name>")
 api.add_resource(Store, "/store/<string:name>")
 api.add_resource(ItemList, "/items")
@@ -73,4 +80,5 @@ api.add_resource(UserLogout, "/logout")
 
 if __name__ == "__main__":
     db.init_app(app)
+    ma.init_app(app)
     app.run(port=5000, debug=True)

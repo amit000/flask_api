@@ -1,31 +1,32 @@
 from flask_jwt_extended import jwt_optional, get_jwt_identity, jwt_required
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
+from flask import request
 from models.Store import StoreDO
+from schemas.storeschema import StoreSchema
 
 FIELD_MISSING_ERROR = "{} can not be left blank"
 STORE_EXISTS_ERROR = "A store with name {} already exists"
 STORE_CREATED_MSG = "Store successfully created"
 STORE_DELETED_MSG = "Store successfully deleted"
 
+store_schema = StoreSchema()
+
 
 class Store(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument(
-        "name", type=str, required=True, help=FIELD_MISSING_ERROR.format("Name")
-    )
-
     @jwt_required
     def get(self, name: str):
         x = StoreDO.find_store_by_name(name)
 
-        return (x.json(), 200) if x else ({"store": None}, 404)
+        return (store_schema.dump(x), 200) if x else ({"store": None}, 404)
 
     @jwt_required
     def post(self, name: str):
         if StoreDO.find_store_by_name(name):
             return {"message": STORE_EXISTS_ERROR.format(name)}, 400
 
-        store = StoreDO(name)
+        store_json = request.get_json()
+        store_json["name"] = name
+        store = store_schema.load(store_json)
         store.upsert_store()
         return {"message": STORE_CREATED_MSG}, 201
 
@@ -43,7 +44,7 @@ class StoreList(Resource):
         user_id = get_jwt_identity()
 
         x = (
-            [store.json() for store in StoreDO.find_stores()]
+            [store_schema.dump(store) for store in StoreDO.find_stores()]
             if user_id
             else [store.noid_json() for store in StoreDO.find_stores()]
         )
