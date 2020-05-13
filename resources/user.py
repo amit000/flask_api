@@ -3,6 +3,7 @@ from flask_restful import Resource
 
 from blacklist import BLACKLIST
 from models.User import User
+from models.confirmation import ConfirmationModel
 from schemas.UserSchema import UserSchema
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import (
@@ -18,12 +19,19 @@ from flask_jwt_extended import (
 
 FIELD_MISSING_ERROR = "{} can not be left blank"
 USER_EXISTS_ERROR = "A user with username '{}' already exists"
-USER_CREATED_MSG = "User successfully created"
+EMAIL_EXISTS_ERROR = "A user with email '{}' already exists"
+USER_CREATED_MSG = "User created, awaiting activation."
 USER_DELETED_MSG = "User successfully deleted"
 USER_NOT_FOUND_MSG = "User does not exist"
 INCORRECT_CREDENTIALS_ERROR = "Invalid username or password"
 ADMIN_PRIVILEGE_ERROR = "You need admin privileges to delete user"
 USER_LOGGED_OUT_MSG = "Successfully Logged Out"
+USER_NOT_ACTIVATED_ERR = (
+    "You have not yet activated your credentials. Please check your email {}."
+)
+USER_ACTIVATED_MESSAGE = "{} is activated"
+USER_ALREADY_ACTIVATED = "{} is already activated"
+
 
 user_schema = UserSchema()
 
@@ -35,7 +43,13 @@ class RegisterUser(Resource):
         if User.find_by_username(user.username):
             return {"message": USER_EXISTS_ERROR.format(user.username)}, 400
 
+        if User.find_by_email(user.email):
+            return {"message": EMAIL_EXISTS_ERROR.format(user.email)}, 400
+
         user.create_user()
+        confirmation = ConfirmationModel(user.id)
+        confirmation.save_to_db()
+        user.send_confirmation_email()
         return {"message": USER_CREATED_MSG}, 201
 
 
@@ -63,15 +77,22 @@ class UserResource(Resource):
 class UserLogin(Resource):
     @classmethod
     def post(cls):
-        user_data = user_schema.load(request.get_json())
+        user_data = user_schema.load(
+            request.get_json(), partial=("email", "confirmation",)
+        )
 
         print(user_data)
         user = User.find_by_username(user_data.username)
         if user and safe_str_cmp(user.password, user_data.password):
-            access_token = create_access_token(identity=user.id, fresh=True)
-            refresh_token = create_refresh_token(user.id)
-            return {"access_token": access_token, "refresh_token": refresh_token}, 200
-
+            confirmation = user.most_recent_confirmation
+            if confirmation and confirmation.confirmed:
+                access_token = create_access_token(identity=user.id, fresh=True)
+                refresh_token = create_refresh_token(user.id)
+                return (
+                    {"access_token": access_token, "refresh_token": refresh_token},
+                    200,
+                )
+            return {"message": USER_NOT_ACTIVATED_ERR.format(user.username)}, 400
         return {"message": INCORRECT_CREDENTIALS_ERROR}, 401
 
 

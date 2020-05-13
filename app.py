@@ -1,7 +1,10 @@
+import os
+
 from flask import Flask, jsonify
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from db import db
+from resources.confirmation import Confirmation, ConfirmationByUser
 from resources.item import Item, ItemList
 from resources.user import (
     RegisterUser,
@@ -16,14 +19,21 @@ from resources.store import Store, StoreList
 from blacklist import BLACKLIST
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
-app.config["PROPAGATE_EXCEPTIONS"] = True
-app.config["JWT_BLACKLIST_ENABLED"] = True
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = os.environ.get(
+    "SQLALCHEMY_TRACK_MODIFICATIONS"
+)
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("SQLALCHEMY_DATABASE_URI")
+app.config["PROPAGATE_EXCEPTIONS"] = os.environ.get("PROPAGATE_EXCEPTIONS")
+app.config["JWT_BLACKLIST_ENABLED"] = os.environ.get("JWT_BLACKLIST_ENABLED")
 app.config["JWT_BLACKLIST_TOKEN_CHECKS"] = ["access", "refresh"]
-app.secret_key = "secretKey"
+app.secret_key = os.environ.get("APP_SECRET_KEY")
 api = Api(app)
 jwt = JWTManager(app)
+
+
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
 
 @jwt.user_claims_loader
@@ -77,6 +87,8 @@ api.add_resource(UserResource, "/user/<int:user_id>")
 api.add_resource(UserLogin, "/login")
 api.add_resource(TokenRefresh, "/refresh")
 api.add_resource(UserLogout, "/logout")
+api.add_resource(Confirmation, "/confirmation/<string:confirmation_id>")
+api.add_resource(ConfirmationByUser, "/confirmationbyuser/<int:user_id>")
 
 if __name__ == "__main__":
     db.init_app(app)
