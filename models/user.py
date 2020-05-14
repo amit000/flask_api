@@ -5,10 +5,6 @@ from libs.strings import gettext
 from models.confirmation import ConfirmationModel
 from db import db
 
-SUBJECT = gettext("user_email_SUBJECT")
-TEXT = gettext("user_email_TEXT")
-HTML = gettext("user_email_HTML")
-
 
 class UserModel(db.Model):
     __tablename__ = "users"
@@ -44,9 +40,9 @@ class UserModel(db.Model):
         )
         send_conf_email(
             self.email,
-            SUBJECT.format(self.username),
-            TEXT.format(self.username, link),
-            HTML.format(self.username, link, link),
+            gettext("user_email_SUBJECT").format(self.username),
+            gettext("user_email_TEXT").format(self.username, link),
+            gettext("user_email_HTML").format(self.username, link, link),
         )
 
     def create_user(self) -> None:

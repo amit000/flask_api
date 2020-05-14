@@ -8,25 +8,21 @@ from models.user import UserModel
 from models.confirmation import ConfirmationModel
 from schemas.confirmation import ConfirmationSchema
 
-NOT_FOUND = gettext("confirmation_NOT_FOUND")
-EXPIRED = gettext("confirmation_EXPIRED")
-ALREADY_CONFIRMED = gettext("confirmation_ALREADY_CONFIRMED")
-RESEND_SCCESSFUL = gettext("confirmation_RESEND_SCCESSFUL")
 
 confirmation_schema = ConfirmationSchema()
 
 
 class Confirmation(Resource):
     @classmethod
-    def get(cls, confirmation_id: str) -> None:
+    def get(cls, confirmation_id: str):
         """Return confirmation HTML page"""
         confirmation = ConfirmationModel.find_by_id(confirmation_id)
         if not confirmation:
-            return {"message": NOT_FOUND}, 404
+            return {"message": (gettext("confirmation_NOT_FOUND"))}, 404
         if confirmation.expired:
-            return {"message": EXPIRED}, 400
+            return {"message": (gettext("confirmation_EXPIRED"))}, 400
         if confirmation.confirmed:
-            return {"message": ALREADY_CONFIRMED}, 400
+            return {"message": (gettext("confirmation_ALREADY_CONFIRMED"))}, 400
 
         confirmation.confirmed = True
         confirmation.save_to_db()
@@ -44,17 +40,17 @@ class ConfirmationByUser(Resource):
         """Resend the confirmation email"""
         user = UserModel.find_by_id(user_id)
         if not user:
-            return {"message": NOT_FOUND}, 404
+            return {"message": (gettext("confirmation_NOT_FOUND"))}, 404
 
         try:
             confirmation = user.most_recent_confirmation
             if confirmation:
-                return {"message": ALREADY_CONFIRMED}, 400
+                return {"message": (gettext("confirmation_ALREADY_CONFIRMED"))}, 400
             confirmation.forced_to_expire()
             new_confirmation = ConfirmationModel(user_id)
             new_confirmation.save_to_db()
             user.send_confirmation_email()
-            return {"message": RESEND_SCCESSFUL}, 200
+            return {"message": (gettext("confirmation_RESEND_SCCESSFUL"))}, 200
         except Exception as e:
             return {"message": str(e)}, 500
 
@@ -63,7 +59,7 @@ class ConfirmationByUser(Resource):
         """Activate user manually. Use for testing"""
         user = UserModel.find_by_id(user_id)
         if not user:
-            return {"message": NOT_FOUND}, 404
+            return {"message": (gettext("confirmation_NOT_FOUND"))}, 404
         return (
             {
                 "current time": int(time()),
