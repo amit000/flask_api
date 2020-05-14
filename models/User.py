@@ -1,12 +1,13 @@
 from flask import request, url_for
 
 from libs.mailgun import send_conf_email
+from libs.strings import gettext
 from models.confirmation import ConfirmationModel
 from db import db
 
-SUBJECT = "{}, please verify your account"
-TEXT = "Hi {}, Click on {} to verify your account."
-HTML = '<html>Hi {}, Click on <a href="{}">{}</a> to verify your account.</html>'
+SUBJECT = gettext("user_email_SUBJECT")
+TEXT = gettext("user_email_TEXT")
+HTML = gettext("user_email_HTML")
 
 
 class User(db.Model):

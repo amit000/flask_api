@@ -1,0 +1,33 @@
+{
+  "user_FIELD_MISSING_ERROR" : "{} can not be left blank",
+  "user_USER_EXISTS_ERROR" : "A user with username '{}' already exists",
+  "user_EMAIL_EXISTS_ERROR" : "A user with email '{}' already exists",
+  "user_USER_CREATED_MSG" : "User created, awaiting activation.",
+  "user_USER_DELETED_MSG" : "User successfully deleted",
+  "user_USER_NOT_FOUND_MSG" : "User does not exist",
+  "user_INCORRECT_CREDENTIALS_ERROR" : "Invalid username or password",
+  "user_ADMIN_PRIVILEGE_ERROR" : "You need admin privileges to delete user",
+  "user_USER_LOGGED_OUT_MSG" : "Successfully Logged Out",
+  "user_USER_NOT_ACTIVATED_ERR" : "You have not yet activated your credentials. Please check your email {}.",
+  "user_USER_ACTIVATED_MESSAGE" : "{} is activated",
+  "user_USER_ALREADY_ACTIVATED" : "{} is already activated",
+
+  "store_FIELD_MISSING_ERROR" : "{} can not be left blank",
+  "store_STORE_EXISTS_ERROR" : "A store with name {} already exists",
+  "store_STORE_CREATED_MSG" : "Store successfully created",
+  "store_STORE_DELETED_MSG" : "Store successfully deleted",
+
+  "item_FIELD_MISSING_ERROR" : "{} can not be left blank",
+  "item_ITEM_EXISTS_ERROR" : "An item with name {} already exists",
+  "item_ITEM_CREATED_MSG" : "Item created",
+  "item_ITEM_DELETED_MSG" : "Item deleted",
+
+  "confirmation_NOT_FOUND" : "User Not Found",
+  "confirmation_EXPIRED" : "Confirmation email expired",
+  "confirmation_ALREADY_CONFIRMED" : "User is already confirmed",
+  "confirmation_RESEND_SCCESSFUL" : "Activation email resend",
+
+  "user_email_SUBJECT" : "{}, please verify your account",
+  "user_email_TEXT" : "Hi {}, Click on {} to verify your account.",
+  "user_email_HTML" : "<html>Hi {}, Click on <a href:\"{}\">{}</a> to verify your account.</html>"
+}

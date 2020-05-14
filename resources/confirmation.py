@@ -3,14 +3,15 @@ from time import time
 from flask import make_response, render_template
 from flask_restful import Resource
 
+from libs.strings import gettext
 from models.User import User
 from models.confirmation import ConfirmationModel
 from schemas.confirmation import ConfirmationSchema
 
-NOT_FOUND = "User Not Found"
-EXPIRED = "Confirmation email expired"
-ALREADY_CONFIRMED = "User is already confirmed"
-RESEND_SCCESSFUL = "Activation email resend"
+NOT_FOUND = gettext("confirmation_NOT_FOUND")
+EXPIRED = gettext("confirmation_EXPIRED")
+ALREADY_CONFIRMED =    gettext("confirmation_ALREADY_CONFIRMED")
+RESEND_SCCESSFUL = gettext("confirmation_RESEND_SCCESSFUL")
 
 confirmation_schema = ConfirmationSchema()
 

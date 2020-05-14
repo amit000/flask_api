@@ -2,6 +2,7 @@ from flask import jsonify, request
 from flask_restful import Resource
 
 from blacklist import BLACKLIST
+from libs.strings import gettext
 from models.User import User
 from models.confirmation import ConfirmationModel
 from schemas.UserSchema import UserSchema
@@ -17,20 +18,18 @@ from flask_jwt_extended import (
 )
 
 
-FIELD_MISSING_ERROR = "{} can not be left blank"
-USER_EXISTS_ERROR = "A user with username '{}' already exists"
-EMAIL_EXISTS_ERROR = "A user with email '{}' already exists"
-USER_CREATED_MSG = "User created, awaiting activation."
-USER_DELETED_MSG = "User successfully deleted"
-USER_NOT_FOUND_MSG = "User does not exist"
-INCORRECT_CREDENTIALS_ERROR = "Invalid username or password"
-ADMIN_PRIVILEGE_ERROR = "You need admin privileges to delete user"
-USER_LOGGED_OUT_MSG = "Successfully Logged Out"
-USER_NOT_ACTIVATED_ERR = (
-    "You have not yet activated your credentials. Please check your email {}."
-)
-USER_ACTIVATED_MESSAGE = "{} is activated"
-USER_ALREADY_ACTIVATED = "{} is already activated"
+FIELD_MISSING_ERROR = gettext('user_FIELD_MISSING_ERROR')
+USER_EXISTS_ERROR = gettext('user_USER_EXISTS_ERROR')
+EMAIL_EXISTS_ERROR = gettext('user_EMAIL_EXISTS_ERROR')
+USER_CREATED_MSG = gettext('user_USER_CREATED_MSG')
+USER_DELETED_MSG = gettext('user_USER_DELETED_MSG')
+USER_NOT_FOUND_MSG = gettext('user_USER_NOT_FOUND_MSG')
+INCORRECT_CREDENTIALS_ERROR = gettext('user_INCORRECT_CREDENTIALS_ERROR')
+ADMIN_PRIVILEGE_ERROR = gettext('user_ADMIN_PRIVILEGE_ERROR')
+USER_LOGGED_OUT_MSG = gettext('user_USER_LOGGED_OUT_MSG')
+USER_NOT_ACTIVATED_ERR = gettext('user_USER_NOT_ACTIVATED_ERR')
+USER_ACTIVATED_MESSAGE = gettext('user_USER_ACTIVATED_MESSAGE')
+USER_ALREADY_ACTIVATED = gettext('user_USER_ALREADY_ACTIVATED')
 
 
 user_schema = UserSchema()

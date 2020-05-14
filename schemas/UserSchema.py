@@ -2,20 +2,20 @@ from marshmallow import post_load, pre_dump
 
 from ma import ma
 from models.User import User
+from schemas.confirmation import ConfirmationSchema
 
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
+    confirmation = ma.Nested(ConfirmationSchema, many=True)
     class Meta:
         model = User
         load_only = ("password",)
-        dump_only = (
-            "id",
-            "confirmation",
-        )
+        dump_only = ("id","confirmation")
 
     @pre_dump
-    def _pre_dump(self, user: User):
+    def dump_it(self, user: User, **kwargs):
         user.confirmation = [user.most_recent_confirmation]
+        #print(user.confirmation[0].id)
         return user
 
     @post_load

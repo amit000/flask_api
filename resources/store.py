@@ -1,13 +1,15 @@
 from flask_jwt_extended import jwt_optional, get_jwt_identity, jwt_required
 from flask_restful import Resource
 from flask import request
+
+from libs.strings import gettext
 from models.Store import StoreDO
 from schemas.storeschema import StoreSchema
 
-FIELD_MISSING_ERROR = "{} can not be left blank"
-STORE_EXISTS_ERROR = "A store with name {} already exists"
-STORE_CREATED_MSG = "Store successfully created"
-STORE_DELETED_MSG = "Store successfully deleted"
+FIELD_MISSING_ERROR = gettext('store_FIELD_MISSING_ERROR')
+STORE_EXISTS_ERROR = gettext('store_STORE_EXISTS_ERROR')
+STORE_CREATED_MSG = gettext('store_STORE_CREATED_MSG')
+STORE_DELETED_MSG = gettext('store_STORE_DELETED_MSG')
 
 store_schema = StoreSchema()
 

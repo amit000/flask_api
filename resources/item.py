@@ -1,13 +1,15 @@
 from flask_jwt_extended import jwt_required, fresh_jwt_required
 from flask_restful import Resource
 from flask import request
+
+from libs.strings import gettext
 from models.Item import ItemDO
 from schemas.itemschema import ItemSchema
 
-FIELD_MISSING_ERROR = "{} can not be left blank"
-ITEM_EXISTS_ERROR = "An item with name {} already exists"
-ITEM_CREATED_MSG = "Item created"
-ITEM_DELETED_MSG = "Item deleted"
+FIELD_MISSING_ERROR = gettext('item_FIELD_MISSING_ERROR')
+ITEM_EXISTS_ERROR = gettext('item_ITEM_EXISTS_ERROR')
+ITEM_CREATED_MSG = gettext('item_ITEM_CREATED_MSG')
+ITEM_DELETED_MSG = gettext('item_ITEM_DELETED_MSG')
 
 item_schema = ItemSchema()
 item_list_schema = ItemSchema(many=True)
