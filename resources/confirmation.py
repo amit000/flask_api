@@ -4,13 +4,13 @@ from flask import make_response, render_template
 from flask_restful import Resource
 
 from libs.strings import gettext
-from models.User import User
+from models.user import UserModel
 from models.confirmation import ConfirmationModel
 from schemas.confirmation import ConfirmationSchema
 
 NOT_FOUND = gettext("confirmation_NOT_FOUND")
 EXPIRED = gettext("confirmation_EXPIRED")
-ALREADY_CONFIRMED =    gettext("confirmation_ALREADY_CONFIRMED")
+ALREADY_CONFIRMED = gettext("confirmation_ALREADY_CONFIRMED")
 RESEND_SCCESSFUL = gettext("confirmation_RESEND_SCCESSFUL")
 
 confirmation_schema = ConfirmationSchema()
@@ -42,7 +42,7 @@ class ConfirmationByUser(Resource):
     @classmethod
     def post(cls, user_id: int):
         """Resend the confirmation email"""
-        user = User.find_by_id(user_id)
+        user = UserModel.find_by_id(user_id)
         if not user:
             return {"message": NOT_FOUND}, 404
 
@@ -61,7 +61,7 @@ class ConfirmationByUser(Resource):
     @classmethod
     def get(cls, user_id: int):
         """Activate user manually. Use for testing"""
-        user = User.find_by_id(user_id)
+        user = UserModel.find_by_id(user_id)
         if not user:
             return {"message": NOT_FOUND}, 404
         return (

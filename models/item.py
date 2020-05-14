@@ -2,7 +2,7 @@ from typing import List
 from db import db
 
 
-class ItemDO(db.Model):
+class ItemModel(db.Model):
     __tablename__ = "items"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -10,18 +10,18 @@ class ItemDO(db.Model):
     price = db.Column(db.Float(precision=2), nullable=False)
 
     store_id = db.Column(db.Integer, db.ForeignKey("stores.id"))
-    store = db.relationship("StoreDO")
+    store = db.relationship("StoreModel")
 
     @classmethod
-    def find_item_by_name(cls, name: str) -> "ItemDO":
+    def find_item_by_name(cls, name: str) -> "ItemModel":
         return cls.query.filter_by(name=name).first()
 
     @classmethod
-    def find_items(cls) -> List["ItemDO"]:
+    def find_items(cls) -> List["ItemModel"]:
         return cls.query.all()
 
     @classmethod
-    def find_item_by_id(cls, _id: int) -> "ItemDO":
+    def find_item_by_id(cls, _id: int) -> "ItemModel":
         return cls.query.filter_by(id=_id).first()
 
     def upsert_item(self) -> None:

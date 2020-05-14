@@ -10,7 +10,7 @@ TEXT = gettext("user_email_TEXT")
 HTML = gettext("user_email_HTML")
 
 
-class User(db.Model):
+class UserModel(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -27,15 +27,15 @@ class User(db.Model):
         return self.confirmation.order_by(db.desc(ConfirmationModel.expire_at)).first()
 
     @classmethod
-    def find_by_username(cls, username: str) -> "User":
+    def find_by_username(cls, username: str) -> "UserModel":
         return cls.query.filter_by(username=username).first()
 
     @classmethod
-    def find_by_id(cls, _id: int) -> "User":
+    def find_by_id(cls, _id: int) -> "UserModel":
         return cls.query.filter_by(id=_id).first()
 
     @classmethod
-    def find_by_email(cls, email: str) -> "User":
+    def find_by_email(cls, email: str) -> "UserModel":
         return cls.query.filter_by(email=email).first()
 
     def send_confirmation_email(self):

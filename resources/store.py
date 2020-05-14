@@ -3,13 +3,13 @@ from flask_restful import Resource
 from flask import request
 
 from libs.strings import gettext
-from models.Store import StoreDO
-from schemas.storeschema import StoreSchema
+from models.store import StoreModel
+from schemas.store import StoreSchema
 
-FIELD_MISSING_ERROR = gettext('store_FIELD_MISSING_ERROR')
-STORE_EXISTS_ERROR = gettext('store_STORE_EXISTS_ERROR')
-STORE_CREATED_MSG = gettext('store_STORE_CREATED_MSG')
-STORE_DELETED_MSG = gettext('store_STORE_DELETED_MSG')
+FIELD_MISSING_ERROR = gettext("store_FIELD_MISSING_ERROR")
+STORE_EXISTS_ERROR = gettext("store_STORE_EXISTS_ERROR")
+STORE_CREATED_MSG = gettext("store_STORE_CREATED_MSG")
+STORE_DELETED_MSG = gettext("store_STORE_DELETED_MSG")
 
 store_schema = StoreSchema()
 
@@ -17,13 +17,13 @@ store_schema = StoreSchema()
 class Store(Resource):
     @jwt_required
     def get(self, name: str):
-        x = StoreDO.find_store_by_name(name)
+        x = StoreModel.find_store_by_name(name)
 
         return (store_schema.dump(x), 200) if x else ({"store": None}, 404)
 
     @jwt_required
     def post(self, name: str):
-        if StoreDO.find_store_by_name(name):
+        if StoreModel.find_store_by_name(name):
             return {"message": STORE_EXISTS_ERROR.format(name)}, 400
 
         store_json = request.get_json()
@@ -34,7 +34,7 @@ class Store(Resource):
 
     @jwt_required
     def delete(self, name: str):
-        x = StoreDO.find_store_by_name(name)
+        x = StoreModel.find_store_by_name(name)
         if x:
             x.delete()
         return {"message": STORE_DELETED_MSG}
@@ -46,8 +46,8 @@ class StoreList(Resource):
         user_id = get_jwt_identity()
 
         x = (
-            [store_schema.dump(store) for store in StoreDO.find_stores()]
+            [store_schema.dump(store) for store in StoreModel.find_stores()]
             if user_id
-            else [store.noid_json() for store in StoreDO.find_stores()]
+            else [store.noid_json() for store in StoreModel.find_stores()]
         )
         return {"stores": x}

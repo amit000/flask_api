@@ -3,9 +3,9 @@ from flask_restful import Resource
 
 from blacklist import BLACKLIST
 from libs.strings import gettext
-from models.User import User
+from models.user import UserModel
 from models.confirmation import ConfirmationModel
-from schemas.UserSchema import UserSchema
+from schemas.user import UserSchema
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import (
     create_access_token,
@@ -18,18 +18,18 @@ from flask_jwt_extended import (
 )
 
 
-FIELD_MISSING_ERROR = gettext('user_FIELD_MISSING_ERROR')
-USER_EXISTS_ERROR = gettext('user_USER_EXISTS_ERROR')
-EMAIL_EXISTS_ERROR = gettext('user_EMAIL_EXISTS_ERROR')
-USER_CREATED_MSG = gettext('user_USER_CREATED_MSG')
-USER_DELETED_MSG = gettext('user_USER_DELETED_MSG')
-USER_NOT_FOUND_MSG = gettext('user_USER_NOT_FOUND_MSG')
-INCORRECT_CREDENTIALS_ERROR = gettext('user_INCORRECT_CREDENTIALS_ERROR')
-ADMIN_PRIVILEGE_ERROR = gettext('user_ADMIN_PRIVILEGE_ERROR')
-USER_LOGGED_OUT_MSG = gettext('user_USER_LOGGED_OUT_MSG')
-USER_NOT_ACTIVATED_ERR = gettext('user_USER_NOT_ACTIVATED_ERR')
-USER_ACTIVATED_MESSAGE = gettext('user_USER_ACTIVATED_MESSAGE')
-USER_ALREADY_ACTIVATED = gettext('user_USER_ALREADY_ACTIVATED')
+FIELD_MISSING_ERROR = gettext("user_FIELD_MISSING_ERROR")
+USER_EXISTS_ERROR = gettext("user_USER_EXISTS_ERROR")
+EMAIL_EXISTS_ERROR = gettext("user_EMAIL_EXISTS_ERROR")
+USER_CREATED_MSG = gettext("user_USER_CREATED_MSG")
+USER_DELETED_MSG = gettext("user_USER_DELETED_MSG")
+USER_NOT_FOUND_MSG = gettext("user_USER_NOT_FOUND_MSG")
+INCORRECT_CREDENTIALS_ERROR = gettext("user_INCORRECT_CREDENTIALS_ERROR")
+ADMIN_PRIVILEGE_ERROR = gettext("user_ADMIN_PRIVILEGE_ERROR")
+USER_LOGGED_OUT_MSG = gettext("user_USER_LOGGED_OUT_MSG")
+USER_NOT_ACTIVATED_ERR = gettext("user_USER_NOT_ACTIVATED_ERR")
+USER_ACTIVATED_MESSAGE = gettext("user_USER_ACTIVATED_MESSAGE")
+USER_ALREADY_ACTIVATED = gettext("user_USER_ALREADY_ACTIVATED")
 
 
 user_schema = UserSchema()
@@ -39,10 +39,10 @@ class RegisterUser(Resource):
     def post(self):
         user = user_schema.load(request.get_json())
 
-        if User.find_by_username(user.username):
+        if UserModel.find_by_username(user.username):
             return {"message": USER_EXISTS_ERROR.format(user.username)}, 400
 
-        if User.find_by_email(user.email):
+        if UserModel.find_by_email(user.email):
             return {"message": EMAIL_EXISTS_ERROR.format(user.email)}, 400
 
         user.create_user()
@@ -55,7 +55,7 @@ class RegisterUser(Resource):
 class UserResource(Resource):
     @classmethod
     def get(cls, user_id: int):
-        user = User.find_by_id(user_id)
+        user = UserModel.find_by_id(user_id)
         return (
             user_schema.dump(user) if user else ({"message": USER_NOT_FOUND_MSG}, 404)
         )
@@ -66,7 +66,7 @@ class UserResource(Resource):
         claims = get_jwt_claims()
         if not claims["is_admin"]:
             return {"message": ADMIN_PRIVILEGE_ERROR}, 401
-        user = User.find_by_id(user_id)
+        user = UserModel.find_by_id(user_id)
         if user:
             user.delete_user()
             return {"message": USER_DELETED_MSG}, 200
@@ -81,7 +81,7 @@ class UserLogin(Resource):
         )
 
         print(user_data)
-        user = User.find_by_username(user_data.username)
+        user = UserModel.find_by_username(user_data.username)
         if user and safe_str_cmp(user.password, user_data.password):
             confirmation = user.most_recent_confirmation
             if confirmation and confirmation.confirmed:
