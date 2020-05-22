@@ -29,5 +29,12 @@
 
   "user_email_SUBJECT" : "{}, please verify your account",
   "user_email_TEXT" : "Hi {}, Click on {} to verify your account.",
-  "user_email_HTML" : "<html>Hi {}, Click on <a href:\"{}\">{}</a> to verify your account.</html>"
+  "user_email_HTML" : "<html>Hi {}, Click on <a href:\"{}\">{}</a> to verify your account.</html>",
+
+  "image_IMAGE_SAVED" : "{} image saved.",
+  "image_ILLEGAL_EXTENSION" : "{} filetype not allowed.",
+  "image_FILENAME_NOT_SAFE" : "{} filename is not allowed",
+  "image_FILE_NOT_FOUND" : "File does not exist. Please check filename.",
+  "image_FILE_SUCCESSFULLY_DELETED" : "{} image successfully deleted.",
+  "image_DELETE_FAILED" : "Unable to delete image. Something went wrong"
 }

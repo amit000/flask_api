@@ -1,9 +1,16 @@
 from dotenv import load_dotenv
 from flask import Flask, jsonify
+from flask_uploads import patch_request_class, configure_uploads
+from marshmallow import ValidationError
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
+
+from libs.image_helper import IMAGE_SET
+from ma import ma
+from blacklist import BLACKLIST
 from db import db
 from resources.confirmation import Confirmation, ConfirmationByUser
+from resources.images import Image, ImageUpload
 from resources.item import Item, ItemList
 from resources.user import (
     RegisterUser,
@@ -12,17 +19,16 @@ from resources.user import (
     TokenRefresh,
     UserLogout,
 )
-from ma import ma
-from marshmallow import ValidationError
 from resources.store import Store, StoreList
-from blacklist import BLACKLIST
 
 app = Flask(__name__)
-load_dotenv(".env",verbose=True)
+load_dotenv(".env", verbose=True)
 app.config.from_object("default_config")
 app.config.from_envvar("APPLICATION_SETTINGS")
 api = Api(app)
 jwt = JWTManager(app)
+patch_request_class(app, 10 * 1024 * 1024)  # restrict max upload image size to 10MB
+configure_uploads(app, IMAGE_SET)
 
 
 @app.before_first_request
@@ -83,6 +89,9 @@ api.add_resource(TokenRefresh, "/refresh")
 api.add_resource(UserLogout, "/logout")
 api.add_resource(Confirmation, "/confirmation/<string:confirmation_id>")
 api.add_resource(ConfirmationByUser, "/confirmationbyuser/<int:user_id>")
+api.add_resource(Image, "/image/<string:filename>")
+api.add_resource(ImageUpload, "/upload/image")
+
 
 if __name__ == "__main__":
     db.init_app(app)
