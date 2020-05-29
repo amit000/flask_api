@@ -1,4 +1,7 @@
 from dotenv import load_dotenv
+
+
+load_dotenv(".env", verbose=True)
 from flask import Flask, jsonify
 from flask_uploads import patch_request_class, configure_uploads
 from marshmallow import ValidationError
@@ -9,6 +12,7 @@ from libs.image_helper import IMAGE_SET
 from ma import ma
 from blacklist import BLACKLIST
 from db import db
+from oa import oauth
 from resources.confirmation import Confirmation, ConfirmationByUser
 from resources.images import Image, ImageUpload
 from resources.item import Item, ItemList
@@ -20,9 +24,10 @@ from resources.user import (
     UserLogout,
 )
 from resources.store import Store, StoreList
+from resources.github_login import GitHubLogin, GitHubAuth
 
 app = Flask(__name__)
-load_dotenv(".env", verbose=True)
+
 app.config.from_object("default_config")
 app.config.from_envvar("APPLICATION_SETTINGS")
 api = Api(app)
@@ -91,9 +96,12 @@ api.add_resource(Confirmation, "/confirmation/<string:confirmation_id>")
 api.add_resource(ConfirmationByUser, "/confirmationbyuser/<int:user_id>")
 api.add_resource(Image, "/image/<string:filename>")
 api.add_resource(ImageUpload, "/upload/image")
+api.add_resource(GitHubLogin, "/github/login")
+api.add_resource(GitHubAuth, "/login/github/authorized")
 
 
 if __name__ == "__main__":
+    oauth.init_app(app)
     db.init_app(app)
     ma.init_app(app)
     app.run(port=5000)
