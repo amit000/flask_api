@@ -36,5 +36,7 @@
   "image_FILENAME_NOT_SAFE" : "{} filename is not allowed",
   "image_FILE_NOT_FOUND" : "File does not exist. Please check filename.",
   "image_FILE_SUCCESSFULLY_DELETED" : "{} image successfully deleted.",
-  "image_DELETE_FAILED" : "Unable to delete image. Something went wrong"
+  "image_DELETE_FAILED" : "Unable to delete image. Something went wrong",
+
+  "order_ITEM_NOT_FOUND" : "Item with id '{}' not found"
 }

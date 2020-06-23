@@ -25,6 +25,7 @@ from resources.user import (
 )
 from resources.store import Store, StoreList
 from resources.github_login import GitHubLogin, GitHubAuth
+from resources.order import Order
 
 app = Flask(__name__)
 
@@ -98,6 +99,7 @@ api.add_resource(Image, "/image/<string:filename>")
 api.add_resource(ImageUpload, "/upload/image")
 api.add_resource(GitHubLogin, "/github/login")
 api.add_resource(GitHubAuth, "/login/github/authorized")
+api.add_resource(Order, "/order")
 
 
 if __name__ == "__main__":
