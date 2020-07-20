@@ -1,7 +1,9 @@
+import os
 from dotenv import load_dotenv
 
-
-load_dotenv(".env", verbose=True)
+dir = os.path.dirname(__file__)
+filename = os.path.join(dir, ".env")
+load_dotenv(filename, verbose=True)
 from flask import Flask, jsonify
 from flask_uploads import patch_request_class, configure_uploads
 from marshmallow import ValidationError

@@ -34,7 +34,7 @@ class OrderModel(db.Model):
         self.save_to_db()
 
     @property
-    def amount(self)-> int:
+    def amount(self) -> int:
         return int(sum([i.item.price * i.quantity for i in self.items_list]) * 100)
 
     @property
@@ -47,7 +47,7 @@ class OrderModel(db.Model):
         description = self.description
         source = token
         ##TODO call payment method with amount description and token
-        #print(amount,description)
+        # print(amount,description)
 
     def save_to_db(self):
         db.session.add(self)

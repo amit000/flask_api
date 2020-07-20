@@ -14,8 +14,7 @@ order_schema = OrderSchema()
 class Order(Resource):
     @classmethod
     def get(cls):
-        return order_schema.dump(OrderModel.find_all(),many=True),200
-
+        return order_schema.dump(OrderModel.find_all(), many=True), 200
 
     @classmethod
     def post(cls):
@@ -36,5 +35,5 @@ class Order(Resource):
         order.set_status("failed")
         order.accept_payment(data["token"])
         order.set_status("complete")
-        abc =  order_schema.dump(order)
+        abc = order_schema.dump(order)
         return abc, 200
