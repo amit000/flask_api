@@ -35,7 +35,7 @@ class OrderModel(db.Model):
 
     @property
     def amount(self) -> int:
-        return int(sum([i.item.price * i.quantity for i in self.items_list]) * 100)
+        return int(sum([(i.item.price * 100) * i.quantity for i in self.items_list]))
 
     @property
     def description(self):
