@@ -30,6 +30,9 @@ class TestStore(BaseTest):
             self.assertEqual(store, StoreModel.find_store_by_name("amazon"))
             self.assertEqual(1, store.id)
             self.assertEqual("amazon", store.name)
+            self.assertListEqual(
+                ["test_name"], [item.name for item in store.items.all()]
+            )
             self.assertDictEqual(
                 {
                     "id": 1,
