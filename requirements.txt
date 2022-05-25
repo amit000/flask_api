@@ -21,7 +21,7 @@ marshmallow==3.5.1
 marshmallow-sqlalchemy==0.23.0
 oauthlib==2.1.0
 pathspec==0.8.0
-PyJWT==1.7.1
+PyJWT==2.4.0
 python-dotenv==0.13.0
 pytz==2019.3
 regex==2020.4.4
